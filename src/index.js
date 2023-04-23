@@ -19,27 +19,30 @@ searchEl.addEventListener(
       return;
     }
 
-    const countries = await fetchCountries(countryName);
+    try {
+      const countries = await fetchCountries(countryName);
+      if (countries.length > 10) {
+        Notiflix.Notify.info(
+          'Too many matches found. Please enter a more specific name.'
+        );
+      } else {
+        countryListEl.innerHTML = countries
+          .map(
+            country =>
+              `<li><img width="16" height="16" src="${country.flags.png}" />${country.name.common}</li>`
+          )
+          .join('');
+      }
 
-    if (countries.length > 10) {
-      Notiflix.Notify.info(
-        'Too many matches found. Please enter a more specific name.'
-      );
-    } else {
-      countryListEl.innerHTML = countries
-        .map(
-          country =>
-            `<li><img width="16" height="16" src="${country.flags.png}" />${country.name.common}</li>`
-        )
-        .join('');
-    }
-
-    if (countries.length === 1) {
-      countryInfoEl.innerHTML = `
+      if (countries.length === 1) {
+        countryInfoEl.innerHTML = `
       <p>Capital: ${countries[0].capital}</p>
       <p>Population: ${countries[0].population}</p>
       <p>Languages: ${Object.values(countries[0].languages).join(', ')}</p>
       `;
+      }
+    } catch (error) {
+      Notiflix.Notify.failure('Oops, there is no country with that name');
     }
   }, DEBOUNCE_DELAY)
 );
