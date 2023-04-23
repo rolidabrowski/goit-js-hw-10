@@ -29,7 +29,7 @@ searchEl.addEventListener(
         countryListEl.innerHTML = countries
           .map(
             country =>
-              `<li><img width="16" height="16" src="${country.flags.png}" />${country.name.common}</li>`
+              `<li class="country-item"><img height="24" src="${country.flags.png}" />${country.name.common}</li>`
           )
           .join('');
       }
