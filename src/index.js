@@ -3,10 +3,10 @@ import { fetchCountries } from './fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
-const DEBOUNCE_DELAY = 300;
 const searchEl = document.getElementById('search-box');
 const countryListEl = document.querySelector('.country-list');
 const countryInfoEl = document.querySelector('.country-info');
+const DEBOUNCE_DELAY = 300;
 
 searchEl.addEventListener(
   'input',
@@ -27,23 +27,37 @@ searchEl.addEventListener(
           'Too many matches found. Please enter a more specific name.'
         );
       } else {
-        countryListEl.innerHTML = countries
-          .map(
-            country =>
-              `<li class="country-item"><img height="24" src="${country.flags.png}" />${country.name.common}</li>`
-          )
-          .join('');
+        renderCountriesList(countries);
       }
 
       if (countries.length === 1) {
-        countryInfoEl.innerHTML = `
-          <p>Capital: ${countries[0].capital}</p>
-          <p>Population: ${countries[0].population}</p>
-          <p>Languages: ${Object.values(countries[0].languages).join(', ')}</p>
-        `;
+        renderInfoList(countries);
       }
     } catch (error) {
       Notiflix.Notify.failure('Oops, there is no country with that name');
     }
   }, DEBOUNCE_DELAY)
 );
+
+function renderCountriesList(countries) {
+  const list = countries
+    .map(
+      country =>
+        `<li class="country-item"><img height="24" src="${country.flags.png}" />${country.name.common}</li>`
+    )
+    .join('');
+  countryListEl.innerHTML = list;
+}
+
+function renderInfoList(countries) {
+  const info = countries
+    .map(
+      country => `
+      <p>Capital: ${country.capital}</p>
+      <p>Population: ${country.population}</p>
+      <p>Languages: ${Object.values(country.languages).join(', ')}</p>
+    `
+    )
+    .join('');
+  countryInfoEl.innerHTML = info;
+}
